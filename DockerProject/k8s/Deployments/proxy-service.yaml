@@ -7,8 +7,9 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: proxy
+    proxy-service: proxy  # تطابق مع تصنيف الـDeployment
   ports:
-    - port: 443      # منفذ الخدمة
-      targetPort: 443 # منفذ التطبيق داخل الـPod
-      nodePort: 30080  # المنفذ الذي سيتم فتحه على كل عقدة (Node) للوصول من الخارج
+    - port: 443       # منفذ الخدمة
+      targetPort: 443  # منفذ التطبيق داخل الـPod
+      nodePort: 30080  # المنفذ الذي سيتم فتحه على كل عقدة (Node)
+
