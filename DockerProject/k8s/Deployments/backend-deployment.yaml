@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: backend  
+        ports:
+        - containerPort: 8080 
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://user:password@db:5432/mydatabase"  # تأكد من ملء التفاصيل بشكل صحيح
