@@ -1,34 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-deployment
+  name: mysql-deployment
   namespace: webapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: database
+      app: mysql
   template:
     metadata:
       labels:
-        app: database
+        app: mysql
     spec:
       containers:
-      - name: database
-        image: postgres:latest 
+      - name: mysql
+        image: mysql:5.7
         ports:
-        - containerPort: 5432
+        - containerPort: 3306
         env:
-        - name: POSTGRES_USER
-          value: "user"
-        - name: POSTGRES_PASSWORD
-          value: "password"
-        - name: POSTGRES_DB
-          value: "mydatabase"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: db-password
+        - name: MYSQL_DATABASE
+          value: "example" # This will create the database on startup
         volumeMounts:
-        - name: db-credentials
-          mountPath: /etc/db-credentials
+        - name: mysql-init
+          mountPath: /docker-entrypoint-initdb.d # MySQL will execute .sql files in this directory
+        resources:
+          limits:
+            memory: "250Mi"
+            cpu: "250m"
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
       volumes:
-      - name: db-credentials
-        hostPath:
-          path: /path/to/your/db-credentials  
+      - name: mysql-init
+        configMap:
+          name: mysql-init-config # ConfigMap that holds your init.sql file
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-config
+  namespace: webapp

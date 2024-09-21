@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: proxy
+        image: zyadtarek/nginx-proxy:latest
         ports:
-        - containerPort: 80
+        - containerPort: 443
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
